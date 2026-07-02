@@ -20,7 +20,7 @@ export default function AddFlightPage() {
     destination_airport: 'LHR',
     departure_time: '',
     arrival_time: '',
-    base_price: '500'
+    base_price: '10000'
   });
 
   const [aircraftDetails, setAircraftDetails] = useState({
@@ -147,7 +147,7 @@ export default function AddFlightPage() {
               <Input type="datetime-local" value={flightDetails.arrival_time} onChange={e => setFlightDetails({...flightDetails, arrival_time: e.target.value})} className="bg-background border-border text-foreground focus:border-primary [color-scheme:dark] dark:[color-scheme:dark]" />
             </div>
             <div className="space-y-2">
-              <label className="text-sm text-muted-foreground">Base Price (USD)</label>
+              <label className="text-sm text-muted-foreground">Base Price (₹)</label>
               <Input type="number" value={flightDetails.base_price} onChange={e => setFlightDetails({...flightDetails, base_price: e.target.value})} className="bg-background border-border text-foreground focus:border-primary" />
             </div>
           </div>

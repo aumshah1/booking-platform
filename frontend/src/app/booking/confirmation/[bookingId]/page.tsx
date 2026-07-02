@@ -11,6 +11,7 @@ import { motion } from 'framer-motion';
 import QRCode from 'react-qr-code';
 import confetti from 'canvas-confetti';
 import { toast } from 'sonner';
+import { formatFlightTime, formatFlightDate } from '@/lib/dateUtils';
 
 import {
   DropdownMenu,
@@ -236,7 +237,7 @@ export default function ConfirmationPage({ params }: { params: Promise<{ booking
                         <div className="flex justify-between items-end">
                           <div>
                             <p className="text-3xl font-bold mb-1 font-mono">{flight.origin_airport?.split(' ')[0]}</p>
-                            <p className="text-xs text-primary/80">{new Date(flight.departure_time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+                            <p className="text-xs text-primary/80">{formatFlightTime(flight.departure_time)}</p>
                           </div>
                           
                           <div className="flex flex-col items-center flex-1 px-8 pb-1">
@@ -246,7 +247,7 @@ export default function ConfirmationPage({ params }: { params: Promise<{ booking
 
                           <div className="text-right">
                             <p className="text-3xl font-bold mb-1 font-mono">{flight.destination_airport?.split(' ')[0]}</p>
-                            <p className="text-xs text-primary/80">{new Date(flight.arrival_time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+                            <p className="text-xs text-primary/80">{formatFlightTime(flight.arrival_time)}</p>
                           </div>
                         </div>
                       </div>
@@ -265,7 +266,7 @@ export default function ConfirmationPage({ params }: { params: Promise<{ booking
                           </div>
                           <div>
                             <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">Date</p>
-                            <p className="font-bold text-md">{new Date(flight.departure_time).toLocaleDateString()}</p>
+                            <p className="font-bold text-md">{formatFlightDate(flight.departure_time)}</p>
                           </div>
                           <div>
                             <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">Seat</p>
@@ -278,7 +279,7 @@ export default function ConfirmationPage({ params }: { params: Promise<{ booking
                           <div>
                             <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">Boarding Time</p>
                             <p className="font-bold text-md text-amber-500">
-                              {new Date(new Date(flight.departure_time).getTime() - 45 * 60000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                              {formatFlightTime(new Date(flight.departure_time).getTime() - 45 * 60000)}
                             </p>
                           </div>
                         </div>
@@ -372,8 +373,8 @@ export default function ConfirmationPage({ params }: { params: Promise<{ booking
               alternativeFlights.map(altFlight => (
                 <div key={altFlight.id} className="flex items-center justify-between p-3 border border-border rounded-lg hover:border-primary/50 transition-colors bg-muted/20">
                   <div>
-                    <p className="font-medium text-sm">{altFlight.flight_number} • {new Date(altFlight.departure_time).toLocaleDateString()}</p>
-                    <p className="text-xs text-muted-foreground">{new Date(altFlight.departure_time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - {new Date(altFlight.arrival_time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+                    <p className="font-medium text-sm">{altFlight.flight_number} • {formatFlightDate(altFlight.departure_time)}</p>
+                    <p className="text-xs text-muted-foreground">{formatFlightTime(altFlight.departure_time)} - {formatFlightTime(altFlight.arrival_time)}</p>
                   </div>
                   <button 
                     onClick={() => handleReschedule(altFlight.id, altFlight)}

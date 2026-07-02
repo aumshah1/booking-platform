@@ -165,7 +165,7 @@ export default function AdminBookingsPage() {
                           ))
                         : <span className="text-muted-foreground">N/A</span>}
                     </td>
-                    <td className="p-4 text-sm text-emerald-600 dark:text-emerald-400 font-medium">${booking.total_amount}</td>
+                    <td className="p-4 text-sm text-emerald-600 dark:text-emerald-400 font-medium">₹{booking.total_amount}</td>
                     <td className="p-4 text-sm text-muted-foreground">{new Date(booking.created_at).toLocaleDateString()}</td>
                     <td className="p-4">
                       <span className={`px-2 py-1 rounded text-xs font-medium border ${

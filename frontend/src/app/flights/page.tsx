@@ -8,9 +8,10 @@ import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Plane, CalendarDays, Search, Clock, Users, ArrowRight, DollarSign } from 'lucide-react';
+import { Plane, CalendarDays, Search, Clock, Users, ArrowRight, IndianRupee } from 'lucide-react';
 import api from '@/lib/axios';
 import { motion } from 'framer-motion';
+import { formatFlightTime, formatFlightDate } from '@/lib/dateUtils';
 
 interface Flight {
   id: string;
@@ -125,7 +126,7 @@ export default function FlightsPage() {
                   />
                 </div>
                 <div className="space-y-2 lg:col-span-1">
-                  <Label htmlFor="maxPrice" className="text-foreground">Max Price ($)</Label>
+                  <Label htmlFor="maxPrice" className="text-foreground">Max Price (₹)</Label>
                   <Input 
                     id="maxPrice" name="maxPrice" type="number" placeholder="Any"
                     value={searchParams.maxPrice} onChange={handleChange}
@@ -189,9 +190,9 @@ export default function FlightsPage() {
                           {/* Time & Route */}
                           <div className="flex flex-1 items-center justify-between w-full">
                             <div className="text-center md:text-left">
-                              <p className="text-2xl font-bold font-mono">{new Date(flight.departure_time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+                              <p className="text-lg font-bold font-mono">{formatFlightTime(flight.departure_time)}</p>
                               <p className="text-sm text-muted-foreground">{flight.source}</p>
-                              <p className="text-xs text-muted-foreground/70 mt-1">{new Date(flight.departure_time).toLocaleDateString()}</p>
+                              <p className="text-xs text-muted-foreground/70 mt-1">{formatFlightDate(flight.departure_time)}</p>
                             </div>
                             
                             <div className="flex flex-col items-center px-4 flex-1">
@@ -208,9 +209,9 @@ export default function FlightsPage() {
                             </div>
 
                             <div className="text-center md:text-right">
-                              <p className="text-2xl font-bold font-mono">{new Date(flight.arrival_time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+                              <p className="text-lg font-bold font-mono">{formatFlightTime(flight.arrival_time)}</p>
                               <p className="text-sm text-muted-foreground">{flight.destination}</p>
-                              <p className="text-xs text-muted-foreground/70 mt-1">{new Date(flight.arrival_time).toLocaleDateString()}</p>
+                              <p className="text-xs text-muted-foreground/70 mt-1">{formatFlightDate(flight.arrival_time)}</p>
                             </div>
                           </div>
 
@@ -218,7 +219,7 @@ export default function FlightsPage() {
                           <div className="flex flex-col items-end gap-3 w-full lg:w-1/4 border-t lg:border-t-0 lg:border-l border-border pt-4 lg:pt-0 lg:pl-6">
                             <div className="text-right">
                               <p className="text-3xl font-bold text-emerald-600 dark:text-emerald-400 flex items-center justify-end font-mono">
-                                <DollarSign className="w-6 h-6 text-muted-foreground" />{flight.price}
+                                <IndianRupee className="w-6 h-6 text-muted-foreground" />{flight.price}
                               </p>
                               <p className="text-sm text-emerald-600 dark:text-emerald-400 flex items-center justify-end gap-1 mt-1">
                                 <Users className="w-4 h-4" /> {flight.available_seats} seats left

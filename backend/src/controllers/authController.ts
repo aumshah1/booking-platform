@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { supabase } from '../database/supabase';
 
 export const register = async (req: Request, res: Response): Promise<void> => {
-  const { email, password, role = 'Passenger' } = req.body;
+  const { email, password, role = 'Passenger', firstName, lastName, phoneNumber, nationality } = req.body;
   
   const { data, error } = await supabase.auth.signUp({
     email,
@@ -10,6 +10,10 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     options: {
       data: {
         role,
+        firstName,
+        lastName,
+        phoneNumber,
+        nationality,
       }
     }
   });

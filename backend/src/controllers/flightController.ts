@@ -161,6 +161,11 @@ export const searchFlights = async (req: Request, res: Response): Promise<void> 
   
   let query = supabase.from('flights').select('*, aircrafts(*)');
 
+  // Hides flights within 6 hours
+  const cutoffTime = new Date(Date.now() + 6 * 60 * 60 * 1000);
+  let startDate = cutoffTime;
+  let endDate: Date | null = null;
+
   if (origin) query = query.ilike('origin_airport', `%${origin}%`);
   if (destination) query = query.ilike('destination_airport', `%${destination}%`);
   
@@ -169,7 +174,15 @@ export const searchFlights = async (req: Request, res: Response): Promise<void> 
     const nextDay = new Date(searchDate);
     nextDay.setDate(nextDay.getDate() + 1);
     
-    query = query.gte('departure_time', searchDate.toISOString()).lt('departure_time', nextDay.toISOString());
+    if (searchDate > cutoffTime) {
+      startDate = searchDate;
+    }
+    endDate = nextDay;
+  }
+
+  query = query.gte('departure_time', startDate.toISOString());
+  if (endDate) {
+    query = query.lt('departure_time', endDate.toISOString());
   }
 
   const { data, error } = await query;

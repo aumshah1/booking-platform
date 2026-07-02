@@ -3,13 +3,22 @@
 import Link from 'next/link';
 import { PlaneTakeoff, LogOut, LayoutDashboard, User } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import NotificationBell from './NotificationBell';
 import { ThemeToggle } from './ThemeToggle';
 
 export default function Navbar() {
   const { user, logout } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
+
+  const navLinks = [
+    { href: '/', label: 'Home' },
+    { href: '/flights', label: 'Flights' },
+    { href: '/trips', label: 'My Trips' },
+    { href: '/services', label: 'Services' },
+    { href: '/contact', label: 'Contact' },
+  ];
 
   const handleLogout = async () => {
     await logout();
@@ -21,7 +30,7 @@ export default function Navbar() {
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <Link href="/" className="flex items-center space-x-3 rtl:space-x-reverse group">
           <PlaneTakeoff className="h-8 w-8 text-primary group-hover:text-primary/80 transition-colors" />
-          <span className="self-center text-2xl font-bold whitespace-nowrap text-foreground font-heading">BlueWings Connect</span>
+          <span className="self-center text-2xl font-bold whitespace-nowrap text-foreground font-heading">Blue<span className="text-primary">Wings</span> Connect</span>
         </Link>
         <div className="flex md:order-2 space-x-4 rtl:space-x-reverse items-center">
           <ThemeToggle />
@@ -48,22 +57,21 @@ export default function Navbar() {
           )}
         </div>
         <div className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
-          <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 text-foreground/80">
-            <li>
-              <Link href="/" className="block py-2 px-3 text-primary md:p-0" aria-current="page">Home</Link>
-            </li>
-            <li>
-              <Link href="/flights" className="block py-2 px-3 hover:text-primary rounded md:hover:bg-transparent md:p-0 transition-colors">Flights</Link>
-            </li>
-            <li>
-              <Link href="/trips" className="block py-2 px-3 hover:text-primary rounded md:hover:bg-transparent md:p-0 transition-colors">My Trips</Link>
-            </li>
-            <li>
-              <Link href="/services" className="block py-2 px-3 hover:text-primary rounded md:hover:bg-transparent md:p-0 transition-colors">Services</Link>
-            </li>
-            <li>
-              <Link href="/contact" className="block py-2 px-3 hover:text-primary rounded md:hover:bg-transparent md:p-0 transition-colors">Contact</Link>
-            </li>
+          <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 text-foreground">
+            {navLinks.map((link) => {
+              const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href));
+              return (
+                <li key={link.href}>
+                  <Link 
+                    href={link.href} 
+                    className={`block py-2 px-3 rounded md:p-0 transition-colors ${isActive ? 'text-primary font-bold' : 'text-foreground/80 hover:text-primary md:hover:bg-transparent'}`}
+                    aria-current={isActive ? 'page' : undefined}
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </div>
       </div>

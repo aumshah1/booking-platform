@@ -82,7 +82,7 @@ export default function BookingSummary({ flight, passengers, onProceed, isLoadin
           
           <div className="flex justify-between items-center text-muted-foreground mt-4">
             <span>Total Base Fare</span>
-            <span className="font-mono text-foreground">${totalBaseFare.toFixed(2)}</span>
+            <span className="font-mono text-foreground">₹{totalBaseFare.toFixed(2)}</span>
           </div>
 
           <AnimatePresence>
@@ -94,20 +94,20 @@ export default function BookingSummary({ flight, passengers, onProceed, isLoadin
                 className="flex justify-between items-center text-muted-foreground overflow-hidden"
               >
                 <span>Seat Charges</span>
-                <span className="font-mono text-amber-500">+${totalSeatCharges.toFixed(2)}</span>
+                <span className="font-mono text-amber-500">+₹{totalSeatCharges.toFixed(2)}</span>
               </motion.div>
             )}
           </AnimatePresence>
 
           <div className="flex justify-between items-center text-muted-foreground">
             <span>Taxes & Fees (10%)</span>
-            <span className="font-mono text-foreground">${taxes.toFixed(2)}</span>
+            <span className="font-mono text-foreground">₹{taxes.toFixed(2)}</span>
           </div>
         </div>
 
         <div className="mt-6 pt-4 border-t border-border flex justify-between items-center">
           <span className="text-lg font-bold font-heading">Grand Total</span>
-          <span className="text-2xl font-black text-primary font-mono">${total.toFixed(2)}</span>
+          <span className="text-2xl font-black text-primary font-mono">₹{total.toFixed(2)}</span>
         </div>
 
         <button 

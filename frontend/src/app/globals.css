@@ -50,43 +50,43 @@
 :root {
   /* LIGHT MODE - Crisp, premium, airy */
   --background: oklch(0.99 0.005 260); /* Very soft blue-tinted white #F8FAFC equivalent */
-  --foreground: oklch(0.25 0.02 260); /* Deep slate #0F172A */
+  --foreground: oklch(0.20 0.03 260); /* Deep slate */
   
   --card: oklch(1 0 0); /* Pure White */
-  --card-foreground: oklch(0.25 0.02 260);
+  --card-foreground: oklch(0.20 0.03 260);
   
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.25 0.02 260);
+  --popover-foreground: oklch(0.20 0.03 260);
   
-  --primary: oklch(0.55 0.16 260); /* Vivid Airline Blue #2563EB */
+  --primary: oklch(0.35 0.12 260); /* Deep Premium Navy/Indigo */
   --primary-foreground: oklch(1 0 0);
   
-  --secondary: oklch(0.96 0.01 260); /* Light slate */
-  --secondary-foreground: oklch(0.35 0.03 260);
+  --secondary: oklch(0.93 0.03 260); /* Richer light blue slate */
+  --secondary-foreground: oklch(0.25 0.03 260);
   
-  --muted: oklch(0.96 0.01 260);
-  --muted-foreground: oklch(0.55 0.02 260);
+  --muted: oklch(0.95 0.02 260);
+  --muted-foreground: oklch(0.45 0.04 260);
   
-  --accent: oklch(0.94 0.02 260);
-  --accent-foreground: oklch(0.35 0.03 260);
+  --accent: oklch(0.90 0.04 260);
+  --accent-foreground: oklch(0.20 0.04 260);
   
   --destructive: oklch(0.6 0.2 25); /* Crimson red */
   --destructive-foreground: oklch(1 0 0);
   
-  --border: oklch(0.92 0.01 260);
-  --input: oklch(0.92 0.01 260);
-  --ring: oklch(0.55 0.16 260);
+  --border: oklch(0.85 0.04 260);
+  --input: oklch(0.85 0.04 260);
+  --ring: oklch(0.35 0.12 260);
   
   --radius: 0.75rem; /* Rounded premium feel */
   
   --sidebar: oklch(1 0 0);
-  --sidebar-foreground: oklch(0.25 0.02 260);
-  --sidebar-primary: oklch(0.55 0.16 260);
+  --sidebar-foreground: oklch(0.20 0.03 260);
+  --sidebar-primary: oklch(0.35 0.12 260);
   --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.96 0.01 260);
-  --sidebar-accent-foreground: oklch(0.25 0.02 260);
-  --sidebar-border: oklch(0.92 0.01 260);
-  --sidebar-ring: oklch(0.55 0.16 260);
+  --sidebar-accent: oklch(0.93 0.03 260);
+  --sidebar-accent-foreground: oklch(0.25 0.03 260);
+  --sidebar-border: oklch(0.85 0.04 260);
+  --sidebar-ring: oklch(0.35 0.12 260);
 }
 
 .dark {

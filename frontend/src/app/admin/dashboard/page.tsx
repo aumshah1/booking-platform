@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import api from '@/lib/axios';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, DollarSign, Users, Plane, XCircle } from 'lucide-react';
+import { Loader2, IndianRupee, Users, Plane, XCircle } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell, Legend } from 'recharts';
 
 export default function AdminDashboardPage() {
@@ -53,11 +53,11 @@ export default function AdminDashboardPage() {
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium font-heading text-muted-foreground">Total Revenue</CardTitle>
             <div className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center">
-              <DollarSign className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+              <IndianRupee className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
             </div>
           </CardHeader>
           <CardContent className="pt-4 relative z-10">
-            <div className="text-3xl font-bold font-mono tracking-tight">${metrics.totalRevenue.toLocaleString()}</div>
+            <div className="text-3xl font-bold font-mono tracking-tight">₹{metrics.totalRevenue.toLocaleString()}</div>
           </CardContent>
         </Card>
         
@@ -119,11 +119,11 @@ export default function AdminDashboardPage() {
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" vertical={false} />
                 <XAxis dataKey="name" stroke="var(--color-muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
-                <YAxis stroke="var(--color-muted-foreground)" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => `$${val}`} />
+                <YAxis stroke="var(--color-muted-foreground)" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => `₹${val}`} />
                 <Tooltip 
                   contentStyle={{ backgroundColor: 'var(--color-card)', borderColor: 'var(--color-border)', color: 'var(--color-card-foreground)', borderRadius: '8px', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                   itemStyle={{ color: 'var(--color-primary)' }}
-                  formatter={(val: any) => [`$${val}`, 'Revenue']}
+                  formatter={(val: any) => [`₹${val}`, 'Revenue']}
                 />
                 <Area type="monotone" dataKey="revenue" stroke="var(--color-primary)" fillOpacity={1} fill="url(#colorRev)" />
               </AreaChart>

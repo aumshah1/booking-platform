@@ -72,11 +72,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = async () => {
     try {
       await api.post('/auth/logout');
-    } catch (error) {
-      console.error('Backend logout failed', error);
+    } catch (error: any) {
+      // Ignore 401 errors as it means the user is already unauthorized/logged out on backend
+      if (error?.response?.status !== 401) {
+        console.error('Backend logout failed', error);
+      }
     } finally {
       await supabase.auth.signOut();
       setUser(null);
+      delete api.defaults.headers.common['Authorization'];
     }
   };
 

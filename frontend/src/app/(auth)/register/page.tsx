@@ -13,6 +13,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
 const registerSchema = z.object({
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+  phoneNumber: z.string().optional(),
+  nationality: z.string().optional(),
   email: z.string().email('Please enter a valid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
 });
@@ -65,6 +69,46 @@ export default function RegisterPage() {
                 {success}
               </div>
             )}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="firstName" className="text-foreground">First Name <span className="text-muted-foreground font-normal text-xs">(Optional)</span></Label>
+                  <Input 
+                    id="firstName" 
+                    placeholder="John" 
+                    className="bg-background border-border text-foreground focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+                    {...register('firstName')}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="lastName" className="text-foreground">Last Name <span className="text-muted-foreground font-normal text-xs">(Optional)</span></Label>
+                  <Input 
+                    id="lastName" 
+                    placeholder="Doe" 
+                    className="bg-background border-border text-foreground focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+                    {...register('lastName')}
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="phoneNumber" className="text-foreground">Phone <span className="text-muted-foreground font-normal text-xs">(Optional)</span></Label>
+                  <Input 
+                    id="phoneNumber" 
+                    placeholder="+1 555-000-0000" 
+                    className="bg-background border-border text-foreground focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+                    {...register('phoneNumber')}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="nationality" className="text-foreground">Nationality <span className="text-muted-foreground font-normal text-xs">(Optional)</span></Label>
+                  <Input 
+                    id="nationality" 
+                    placeholder="e.g. US" 
+                    className="bg-background border-border text-foreground focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+                    {...register('nationality')}
+                  />
+                </div>
+              </div>
             <div className="space-y-2">
               <Label htmlFor="email" className="text-foreground">Email</Label>
               <Input 

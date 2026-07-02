@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plane, CalendarDays, Loader2, Clock, ArrowRight, XCircle, CheckCircle2 } from 'lucide-react';
 import api from '@/lib/axios';
 import { motion } from 'framer-motion';
+import { formatFlightTime, formatFlightDate } from '@/lib/dateUtils';
 
 export default function MyTripsPage() {
   const router = useRouter();
@@ -68,9 +69,9 @@ export default function MyTripsPage() {
 
               <div className="flex flex-1 items-center justify-between w-full">
                 <div className="text-center md:text-left">
-                  <p className="text-2xl font-bold font-mono">{new Date(flight.departure_time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+                  <p className="text-lg font-bold font-mono">{formatFlightTime(flight.departure_time)}</p>
                   <p className="text-sm text-muted-foreground">{flight.origin_airport?.split(' ')[0]}</p>
-                  <p className="text-xs text-muted-foreground/70 mt-1">{new Date(flight.departure_time).toLocaleDateString()}</p>
+                  <p className="text-xs text-muted-foreground/70 mt-1">{formatFlightDate(flight.departure_time)}</p>
                 </div>
                 
                 <div className="flex flex-col items-center px-4 flex-1">
@@ -87,9 +88,9 @@ export default function MyTripsPage() {
                 </div>
 
                 <div className="text-center md:text-right">
-                  <p className="text-2xl font-bold font-mono">{new Date(flight.arrival_time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+                  <p className="text-lg font-bold font-mono">{formatFlightTime(flight.arrival_time)}</p>
                   <p className="text-sm text-muted-foreground">{flight.destination_airport?.split(' ')[0]}</p>
-                  <p className="text-xs text-muted-foreground/70 mt-1">{new Date(flight.arrival_time).toLocaleDateString()}</p>
+                  <p className="text-xs text-muted-foreground/70 mt-1">{formatFlightDate(flight.arrival_time)}</p>
                 </div>
               </div>
 

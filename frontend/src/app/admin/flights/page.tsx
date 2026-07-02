@@ -5,6 +5,7 @@ import api from '@/lib/axios';
 import { Loader2, Plus, Plane, Edit, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import Link from 'next/link';
+import { formatFlightDateTime } from '@/lib/dateUtils';
 
 export default function AdminFlightsPage() {
   const [flights, setFlights] = useState<any[]>([]);
@@ -90,8 +91,8 @@ export default function AdminFlightsPage() {
                   <td className="p-4 font-medium text-foreground">{flight.airline_name}</td>
                   <td className="p-4 text-muted-foreground font-mono">{flight.flight_number}</td>
                   <td className="p-4 text-muted-foreground">{flight.origin_airport} → {flight.destination_airport}</td>
-                  <td className="p-4 text-sm text-muted-foreground">{new Date(flight.departure_time).toLocaleString()}</td>
-                  <td className="p-4 text-emerald-600 dark:text-emerald-400 font-medium">${flight.base_price}</td>
+                  <td className="p-4 text-sm text-muted-foreground">{formatFlightDateTime(flight.departure_time)}</td>
+                  <td className="p-4 text-emerald-600 dark:text-emerald-400 font-medium">₹{flight.base_price}</td>
                   <td className="p-4 text-muted-foreground">{flight.aircrafts?.total_seats || 'N/A'}</td>
                   <td className="p-4 text-muted-foreground">
                     <span className={`px-2 py-1 rounded text-xs font-semibold ${flight.status === 'SCHEDULED' ? 'bg-primary/10 text-primary' : flight.status === 'CANCELLED' ? 'bg-destructive/10 text-destructive' : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'}`}>

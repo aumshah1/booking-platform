@@ -24,7 +24,7 @@ export default function SeatTooltip({ seat, position }: SeatTooltipProps) {
         <div className="flex justify-between items-start mb-2">
           <span className="text-xl font-bold">{seat.seat_number}</span>
           <span className="text-xs font-mono bg-blue-600/30 text-blue-400 px-2 py-1 rounded">
-            ${seat.price.toFixed(2)}
+            ₹{seat.price.toFixed(2)}
           </span>
         </div>
         

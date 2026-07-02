@@ -4,7 +4,10 @@ import { supabase } from '../database/supabase';
 
 export const getNotifications = async (req: AuthRequest, res: Response): Promise<void> => {
   const user_id = req.user?.id;
-  if (!user_id) return { res: res.status(401).json({ error: 'Unauthorized' }) } as any;
+  if (!user_id) {
+    res.status(401).json({ error: 'Unauthorized' });
+    return;
+  }
 
   const { data, error } = await supabase
     .from('notifications')
@@ -14,7 +17,8 @@ export const getNotifications = async (req: AuthRequest, res: Response): Promise
     .limit(50); // Get latest 50 notifications
 
   if (error) {
-    return { res: res.status(500).json({ error: error.message }) } as any;
+    res.status(500).json({ error: error.message });
+    return;
   }
 
   res.status(200).json({ data });
@@ -23,7 +27,10 @@ export const getNotifications = async (req: AuthRequest, res: Response): Promise
 export const markAsRead = async (req: AuthRequest, res: Response): Promise<void> => {
   const { id } = req.params;
   const user_id = req.user?.id;
-  if (!user_id) return { res: res.status(401).json({ error: 'Unauthorized' }) } as any;
+  if (!user_id) {
+    res.status(401).json({ error: 'Unauthorized' });
+    return;
+  }
 
   const { data, error } = await supabase
     .from('notifications')
@@ -34,7 +41,8 @@ export const markAsRead = async (req: AuthRequest, res: Response): Promise<void>
     .single();
 
   if (error) {
-    return { res: res.status(500).json({ error: error.message }) } as any;
+    res.status(500).json({ error: error.message });
+    return;
   }
 
   res.status(200).json({ data });
@@ -42,7 +50,10 @@ export const markAsRead = async (req: AuthRequest, res: Response): Promise<void>
 
 export const markAllAsRead = async (req: AuthRequest, res: Response): Promise<void> => {
   const user_id = req.user?.id;
-  if (!user_id) return { res: res.status(401).json({ error: 'Unauthorized' }) } as any;
+  if (!user_id) {
+    res.status(401).json({ error: 'Unauthorized' });
+    return;
+  }
 
   const { error } = await supabase
     .from('notifications')
@@ -51,7 +62,8 @@ export const markAllAsRead = async (req: AuthRequest, res: Response): Promise<vo
     .eq('is_read', false);
 
   if (error) {
-    return { res: res.status(500).json({ error: error.message }) } as any;
+    res.status(500).json({ error: error.message });
+    return;
   }
 
   res.status(200).json({ message: 'All notifications marked as read' });

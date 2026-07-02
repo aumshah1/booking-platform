@@ -10,6 +10,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Plane, CalendarDays, Bell, UserCircle, CreditCard, Search, ArrowRight, Activity } from 'lucide-react';
 import api from '@/lib/axios';
 import { motion } from 'framer-motion';
+import { formatFlightDate, formatFlightDateTime } from '@/lib/dateUtils';
 
 export default function DashboardPage() {
   const { user } = useAuth();
@@ -102,7 +103,7 @@ export default function DashboardPage() {
                                     <Badge variant="outline" className="text-primary border-primary/30">{trip.flightNumber}</Badge>
                                     <span className="text-sm text-muted-foreground flex items-center gap-1">
                                       <CalendarDays className="w-4 h-4" /> 
-                                      {new Date(trip.departureTime).toLocaleDateString()}
+                                      {formatFlightDate(trip.departureTime)}
                                     </span>
                                   </div>
                                   <div className="flex items-center gap-4 text-lg font-medium">
@@ -154,11 +155,11 @@ export default function DashboardPage() {
                                 </div>
                                 <div>
                                   <p className="font-medium">{booking.route}</p>
-                                  <p className="text-xs text-muted-foreground">{new Date(booking.date).toLocaleDateString()}</p>
+                                  <p className="text-xs text-muted-foreground">{formatFlightDate(booking.date)}</p>
                                 </div>
                               </div>
                               <div className="text-right">
-                                <p className="font-medium">${booking.amount.toFixed(2)}</p>
+                                <p className="font-medium">₹{booking.amount.toFixed(2)}</p>
                                 <span className="text-xs text-emerald-600 dark:text-emerald-400">{booking.status}</span>
                               </div>
                             </div>
@@ -219,7 +220,7 @@ export default function DashboardPage() {
                           {notifications.map((notif) => (
                             <div key={notif.id} className="p-3 rounded-lg bg-muted/50 border border-border">
                               <p className="text-sm font-medium">{notif.message}</p>
-                              <p className="text-xs text-muted-foreground mt-2">{new Date(notif.timestamp).toLocaleString()}</p>
+                              <p className="text-xs text-muted-foreground mt-2">{formatFlightDateTime(notif.timestamp)}</p>
                             </div>
                           ))}
                         </div>

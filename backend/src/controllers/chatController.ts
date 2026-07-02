@@ -111,7 +111,7 @@ const generateAIResponse = async (userMessage: string, userId: string): Promise<
 
   // 6. Refund Policy
   if (msg.includes('refund policy') || msg.includes('refund')) {
-    return "### Refund Policy\n- Cancellations made **24 hours** before departure are eligible for a full refund to the original payment method.\n- Cancellations made within 24 hours of departure are subject to a **$50 cancellation fee**.\n- No-shows are **non-refundable**.";
+    return "### Refund Policy\n- Cancellations made **24 hours** before departure are eligible for a full refund to the original payment method.\n- Cancellations made within 24 hours of departure are subject to a **₹1000 cancellation fee**.\n- No-shows are **non-refundable**.";
   }
   
   // 7. General / Support FAQs

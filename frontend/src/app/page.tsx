@@ -111,47 +111,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Popular Destinations Section */}
-        <div className="w-full bg-background py-24">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-5xl font-bold font-heading mb-4 text-foreground">Explore Popular Destinations</h2>
-              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">Discover top-rated locations around the globe with our exclusive flight offers.</p>
-            </div>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {[
-                { name: "Paris, France", image: "🗼", price: "From $499", color: "bg-blue-500/10 text-blue-500" },
-                { name: "Tokyo, Japan", image: "🗻", price: "From $699", color: "bg-emerald-500/10 text-emerald-500" },
-                { name: "New York, USA", image: "🗽", price: "From $299", color: "bg-purple-500/10 text-purple-500" },
-                { name: "Dubai, UAE", image: "🐪", price: "From $549", color: "bg-amber-500/10 text-amber-500" },
-              ].map((dest, i) => (
-                <motion.div 
-                  key={dest.name}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  className="group relative overflow-hidden rounded-3xl bg-card border border-border shadow-sm hover:shadow-xl transition-all cursor-pointer"
-                >
-                  <div className="aspect-[4/3] flex items-center justify-center bg-muted/30 group-hover:bg-muted/50 transition-colors">
-                    <span className="text-6xl">{dest.image}</span>
-                  </div>
-                  <div className="p-6">
-                    <div className={`inline-block px-3 py-1 rounded-full text-xs font-semibold mb-3 ${dest.color}`}>
-                      Popular
-                    </div>
-                    <h3 className="text-xl font-bold font-heading mb-1 text-foreground">{dest.name}</h3>
-                    <p className="text-muted-foreground mb-4">{dest.price}</p>
-                    <Link href="/flights" className="inline-flex items-center text-primary font-medium group-hover:underline">
-                      View flights <ArrowRight className="w-4 h-4 ml-1" />
-                    </Link>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </div>
+
       </main>
     </div>
   );
