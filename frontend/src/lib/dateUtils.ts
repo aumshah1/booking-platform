@@ -1,7 +1,7 @@
 /**
  * Formats a date string into IST and UTC representations.
  * Example: 10:30 AM (IST) / 05:00 AM (UTC)
- */
+ */ 
 export function formatFlightTime(dateString: string | Date): string {
   if (!dateString) return '';
   const date = new Date(dateString);
