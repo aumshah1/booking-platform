@@ -12,6 +12,7 @@ import notificationRoutes from './routes/notifications';
 import profileRoutes from './routes/profile';
 import adminRoutes from './routes/admin';
 import chatRoutes from './routes/chatRoutes';
+import whatsappRoutes from './routes/whatsapp';
 
 dotenv.config();
 
@@ -34,6 +35,7 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/whatsapp', whatsappRoutes);
 
 app.get('/', (req: Request, res: Response) => {
   res.send('SkyTalk AI Backend is running.');

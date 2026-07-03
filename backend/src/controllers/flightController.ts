@@ -157,7 +157,7 @@ export const getFlight = async (req: Request, res: Response): Promise<void> => {
 };
 
 export const searchFlights = async (req: Request, res: Response): Promise<void> => {
-  const { origin, destination, date } = req.query;
+  const { origin, destination, date, maxPrice, minSeats } = req.query;
   
   let query = supabase.from('flights').select('*, aircrafts(*)');
 
@@ -168,6 +168,14 @@ export const searchFlights = async (req: Request, res: Response): Promise<void> 
 
   if (origin) query = query.ilike('origin_airport', `%${origin}%`);
   if (destination) query = query.ilike('destination_airport', `%${destination}%`);
+
+  // ── Max price filter (applied directly on DB query) ──────────────────────
+  if (maxPrice) {
+    const maxPriceNum = Number(maxPrice);
+    if (!isNaN(maxPriceNum) && maxPriceNum > 0) {
+      query = query.lte('base_price', maxPriceNum);
+    }
+  }
   
   if (date) {
     const searchDate = new Date(date as string);
@@ -185,14 +193,19 @@ export const searchFlights = async (req: Request, res: Response): Promise<void> 
     query = query.lt('departure_time', endDate.toISOString());
   }
 
+  // Only return scheduled / active flights
+  query = query.neq('status', 'CANCELLED');
+
   const { data, error } = await query;
   if (error) {
     res.status(400).json({ error: error.message });
     return;
   }
 
-  // Format data for frontend (map base_price -> price, fetch available_seats)
-  const formattedData = await Promise.all(data.map(async (f: any) => {
+  // ── Format data: fetch available seat count per flight in parallel ────────
+  const minSeatsNum = minSeats ? Number(minSeats) : 1;
+
+  const formattedData = (await Promise.all(data.map(async (f: any) => {
     const { count } = await supabase
       .from('flight_seats')
       .select('*', { count: 'exact', head: true })
@@ -210,7 +223,7 @@ export const searchFlights = async (req: Request, res: Response): Promise<void> 
       price: Number(f.base_price),
       available_seats: count || 0
     };
-  }));
+  }))).filter((f: any) => f.available_seats >= minSeatsNum);
 
   res.status(200).json({ data: formattedData });
 };

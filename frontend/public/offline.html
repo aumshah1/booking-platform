@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>You're Offline — BlueWings Connect</title>
+  <link rel="manifest" href="/manifest.json" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: system-ui, sans-serif;
+      background: #0B1120;
+      color: #F8FAFC;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+    }
+    .icon { font-size: 5rem; margin-bottom: 1.5rem; }
+    h1 { font-size: 2rem; font-weight: 800; margin-bottom: 0.75rem; }
+    p { color: #94A3B8; font-size: 1.1rem; line-height: 1.6; max-width: 400px; margin-bottom: 2rem; }
+    a {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.875rem 2rem;
+      background: #2563EB;
+      color: white;
+      border-radius: 9999px;
+      font-weight: 700;
+      text-decoration: none;
+      font-size: 1rem;
+      transition: background 0.2s;
+    }
+    a:hover { background: #1D4ED8; }
+    .tip {
+      margin-top: 2rem;
+      padding: 1rem 1.5rem;
+      background: rgba(37, 99, 235, 0.15);
+      border: 1px solid rgba(37, 99, 235, 0.3);
+      border-radius: 0.75rem;
+      font-size: 0.875rem;
+      color: #93C5FD;
+      max-width: 380px;
+    }
+  </style>
+</head>
+<body>
+  <div class="icon">✈️</div>
+  <h1>You're Offline</h1>
+  <p>
+    No internet connection detected. Your previously saved boarding passes
+    and trips may still be available below.
+  </p>
+  <a href="/trips">📋 View My Trips</a>
+  <div class="tip">
+    💡 <strong>Tip:</strong> Install BlueWings Connect as an app on your phone
+    for automatic offline access to your boarding passes.
+  </div>
+</body>
+</html>

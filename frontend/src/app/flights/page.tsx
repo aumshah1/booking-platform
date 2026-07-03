@@ -31,25 +31,27 @@ export default function FlightsPage() {
   const [loading, setLoading] = useState(true);
   
   const [searchParams, setSearchParams] = useState({
-    source: '',
+    origin: '',
     destination: '',
     date: '',
     maxPrice: '',
     minSeats: '1'
   });
 
-  const fetchFlights = async () => {
+  const fetchFlights = async (params = searchParams) => {
     setLoading(true);
     try {
-      // Build query string
-      const params = new URLSearchParams();
-      if (searchParams.source) params.append('source', searchParams.source);
-      if (searchParams.destination) params.append('destination', searchParams.destination);
-      if (searchParams.date) params.append('date', searchParams.date);
-      if (searchParams.maxPrice) params.append('maxPrice', searchParams.maxPrice);
-      if (searchParams.minSeats) params.append('minSeats', searchParams.minSeats);
+      const qs = new URLSearchParams();
+      if (params.origin)      qs.append('origin',      params.origin);
+      if (params.destination) qs.append('destination', params.destination);
+      if (params.date)        qs.append('date',        params.date);
+      // Only send maxPrice if user actually typed a value
+      if (params.maxPrice && Number(params.maxPrice) > 0)
+        qs.append('maxPrice', params.maxPrice);
+      if (params.minSeats && Number(params.minSeats) > 0)
+        qs.append('minSeats', params.minSeats);
 
-      const res = await api.get(`/api/flights/search?${params.toString()}`);
+      const res = await api.get(`/api/flights/search?${qs.toString()}`);
       setFlights(res.data.data);
     } catch (error) {
       console.error('Failed to search flights:', error);
@@ -60,6 +62,7 @@ export default function FlightsPage() {
 
   useEffect(() => {
     fetchFlights();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleSearch = (e: React.FormEvent) => {
@@ -68,11 +71,16 @@ export default function FlightsPage() {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchParams({
-      ...searchParams,
-      [e.target.name]: e.target.value
-    });
+    setSearchParams(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
+
+  const handleClearFilters = () => {
+    const reset = { origin: '', destination: '', date: '', maxPrice: '', minSeats: '1' };
+    setSearchParams(reset);
+    fetchFlights(reset);
+  };
+
+  const hasActiveFilters = searchParams.origin || searchParams.destination || searchParams.date || searchParams.maxPrice;
 
   const calculateDuration = (dep: string, arr: string) => {
     const diffMs = new Date(arr).getTime() - new Date(dep).getTime();
@@ -102,10 +110,10 @@ export default function FlightsPage() {
             <CardContent className="p-4 md:p-6">
               <form onSubmit={handleSearch} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 items-end">
                 <div className="space-y-2 lg:col-span-1">
-                  <Label htmlFor="source" className="text-foreground">From</Label>
+                  <Label htmlFor="origin" className="text-foreground">From</Label>
                   <Input 
-                    id="source" name="source" placeholder="City or Airport" 
-                    value={searchParams.source} onChange={handleChange}
+                    id="origin" name="origin" placeholder="City or Airport" 
+                    value={searchParams.origin} onChange={handleChange}
                     className="bg-background border-border text-foreground focus:border-primary transition-all"
                   />
                 </div>
@@ -128,8 +136,9 @@ export default function FlightsPage() {
                 <div className="space-y-2 lg:col-span-1">
                   <Label htmlFor="maxPrice" className="text-foreground">Max Price (₹)</Label>
                   <Input 
-                    id="maxPrice" name="maxPrice" type="number" placeholder="Any"
+                    id="maxPrice" name="maxPrice" type="number" placeholder="Any price"
                     value={searchParams.maxPrice} onChange={handleChange}
+                    min="0"
                     className="bg-background border-border text-foreground focus:border-primary transition-all"
                   />
                 </div>
@@ -147,6 +156,17 @@ export default function FlightsPage() {
                   </button>
                 </div>
               </form>
+              {/* Active filter summary + clear button */}
+              {hasActiveFilters && (
+                <div className="flex flex-wrap gap-2 mt-4 items-center">
+                  <span className="text-xs text-muted-foreground">Active filters:</span>
+                  {searchParams.origin && <span className="px-2 py-0.5 bg-primary/10 text-primary rounded-full text-xs">From: {searchParams.origin}</span>}
+                  {searchParams.destination && <span className="px-2 py-0.5 bg-primary/10 text-primary rounded-full text-xs">To: {searchParams.destination}</span>}
+                  {searchParams.date && <span className="px-2 py-0.5 bg-primary/10 text-primary rounded-full text-xs">Date: {searchParams.date}</span>}
+                  {searchParams.maxPrice && <span className="px-2 py-0.5 bg-primary/10 text-primary rounded-full text-xs">Max ₹{searchParams.maxPrice}</span>}
+                  <button onClick={handleClearFilters} className="ml-auto text-xs text-destructive hover:underline">✕ Clear all filters</button>
+                </div>
+              )}
             </CardContent>
           </Card>
 

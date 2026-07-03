@@ -5,13 +5,15 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import Navbar from '@/components/Navbar';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Plane, CheckCircle2, Loader2, MoreVertical, XCircle, CalendarClock, Armchair, Ticket } from 'lucide-react';
+import { Plane, CheckCircle2, Loader2, MoreVertical, XCircle, CalendarClock, Armchair, Ticket, Download } from 'lucide-react';
 import api from '@/lib/axios';
 import { motion } from 'framer-motion';
 import QRCode from 'react-qr-code';
+import QRCodeLib from 'qrcode';
 import confetti from 'canvas-confetti';
 import { toast } from 'sonner';
 import { formatFlightTime, formatFlightDate } from '@/lib/dateUtils';
+import jsPDF from 'jspdf';
 
 import {
   DropdownMenu,
@@ -132,6 +134,209 @@ export default function ConfirmationPage({ params }: { params: Promise<{ booking
       toast.error(err.response?.data?.error || 'Failed to reschedule');
       setBooking((prev: any) => ({ ...prev, flight_id: oldFlight.id, flights: oldFlight }));
     }
+  };
+
+  const handleDownloadPDF = async () => {
+    const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+    const pageW = doc.internal.pageSize.getWidth();  // 841.89
+    const pageH = doc.internal.pageSize.getHeight(); // 595.28
+    const margin = 40;
+    const cardW  = pageW - margin * 2;
+
+    for (let idx = 0; idx < booking_passengers.length; idx++) {
+      const pax = booking_passengers[idx];
+      if (idx > 0) doc.addPage();
+
+      const originCode = (flight.origin_airport || '').split(' ')[0];
+      const destCode   = (flight.destination_airport || '').split(' ')[0];
+
+      // ── Generate real QR code data URL ────────────────────────────────────
+      const qrPayload = JSON.stringify({
+        pnr:    booking.pnr,
+        ticket: pax.ticket_number || '',
+        flight: flight.flight_number,
+        pax:    `${pax.first_name} ${pax.last_name}`,
+        from:   originCode,
+        to:     destCode,
+        date:   new Date(flight.departure_time).toLocaleDateString('en-GB', { timeZone: 'Asia/Kolkata' }),
+        seat:   pax.seat_number || 'N/A',
+      });
+      const qrDataUrl = await QRCodeLib.toDataURL(qrPayload, {
+        width: 300,
+        margin: 2,
+        color: { dark: '#0F1737', light: '#FFFFFF' },
+        errorCorrectionLevel: 'M',
+      });
+
+      // ── Page background ─────────────────────────────────────────────────
+      doc.setFillColor(240, 244, 255);
+      doc.rect(0, 0, pageW, pageH, 'F');
+
+      // ── Card (white, rounded) ────────────────────────────────────────────
+      const cardY = 32;
+      const cardH = pageH - 64;
+      doc.setFillColor(255, 255, 255);
+      doc.setDrawColor(210, 220, 240);
+      doc.setLineWidth(0.5);
+      doc.roundedRect(margin, cardY, cardW, cardH, 12, 12, 'FD');
+
+      // ── Header band ─────────────────────────────────────────────────
+      const hdrH = 140;
+      // Dark navy fill - top rounded corners only
+      doc.setFillColor(15, 23, 55);
+      doc.roundedRect(margin, cardY, cardW, hdrH, 12, 12, 'F');
+      doc.rect(margin, cardY + hdrH - 14, cardW, 14, 'F'); // square off bottom
+
+      // ── Airline name + plane icon row ───────────────────────────────
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(11);
+      doc.setTextColor(255, 255, 255);
+      doc.text('✈  ' + (flight.airline_name || 'AIRLINE').toUpperCase(), margin + 22, cardY + 26);
+
+      // Badges: passenger type + class (top right)
+      const badgeBg: [number,number,number] = [35, 48, 100];
+      const badgeTxt: [number,number,number] = [180, 200, 255];
+      const badgeY = cardY + 14;
+      const badge1X = margin + cardW - 210;
+      const badge2X = margin + cardW - 110;
+      // badge 1 (passenger type)
+      doc.setFillColor(...badgeBg);
+      doc.roundedRect(badge1X, badgeY, 88, 20, 6, 6, 'F');
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(8.5);
+      doc.setTextColor(...badgeTxt);
+      doc.text((pax.passenger_type || 'ADULT').toUpperCase(), badge1X + 44, badgeY + 13, { align: 'center' });
+      // badge 2 (class)
+      doc.setFillColor(...badgeBg);
+      doc.roundedRect(badge2X, badgeY, 88, 20, 6, 6, 'F');
+      doc.text('ECONOMY', badge2X + 44, badgeY + 13, { align: 'center' });
+
+      // ── Route row: BIG airport codes ────────────────────────────────
+      const routeY = cardY + 80;
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(48);
+      doc.setTextColor(255, 255, 255);
+      doc.text(originCode, margin + 28, routeY);
+      doc.text(destCode, margin + cardW - 28, routeY, { align: 'right' });
+
+      // Flight line with plane
+      const lineStartX = margin + 110;
+      const lineEndX   = margin + cardW - 110;
+      const lineY      = routeY - 18;
+      doc.setDrawColor(59, 100, 220);
+      doc.setLineWidth(1.2);
+      doc.line(lineStartX, lineY, lineEndX, lineY);
+      doc.setFontSize(15);
+      doc.setTextColor(100, 140, 255);
+      doc.text('✈', (lineStartX + lineEndX) / 2, lineY - 3, { align: 'center' });
+
+      // Times under airport codes
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8.5);
+      doc.setTextColor(160, 185, 230);
+      const depTime = new Date(flight.departure_time).toLocaleTimeString('en-US', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit' });
+      const arrTime = new Date(flight.arrival_time).toLocaleTimeString('en-US', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit' });
+      doc.text(`${depTime} IST`, margin + 28, routeY + 14);
+      doc.text(`${arrTime} IST`, margin + cardW - 28, routeY + 14, { align: 'right' });
+
+      // ── Dashed separator with circular notches ─────────────────────────
+      const sepY = cardY + hdrH + 16;
+      doc.setDrawColor(180, 200, 230);
+      doc.setLineWidth(0.7);
+      doc.setLineDashPattern([5, 5], 0);
+      doc.line(margin + 22, sepY, margin + cardW - 22, sepY);
+      doc.setLineDashPattern([], 0);
+      // notch circles (cut-out effect)
+      doc.setFillColor(240, 244, 255);
+      doc.circle(margin, sepY, 14, 'F');
+      doc.circle(margin + cardW, sepY, 14, 'F');
+
+      // ── Body: passenger info grid + real QR ───────────────────────────
+      // Fixed small QR size
+      const qrSize  = 120;
+      const bodyH   = cardY + cardH - sepY - 28; // available body height
+      const qrX     = margin + cardW - qrSize - 28;
+      const qrY2    = sepY + (bodyH - qrSize) / 2 - 10; // vertically centered
+
+      // Dashed vertical divider before QR
+      doc.setDrawColor(180, 200, 230);
+      doc.setLineWidth(0.7);
+      doc.setLineDashPattern([5, 5], 0);
+      doc.line(qrX - 16, sepY + 8, qrX - 16, cardY + cardH - 14);
+      doc.setLineDashPattern([], 0);
+
+      // ── Embed the REAL QR image ───────────────────────────────────────
+      doc.addImage(qrDataUrl, 'PNG', qrX, qrY2, qrSize, qrSize);
+      // QR label below
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(6.5);
+      doc.setTextColor(140, 160, 200);
+      doc.text('SCAN TO VERIFY', qrX + qrSize / 2, qrY2 + qrSize + 11, { align: 'center' });
+
+      // ── Field grid (left of QR) ──────────────────────────────────────
+      const fieldAreaW = qrX - margin - 48;
+      const colW       = fieldAreaW / 2;
+      const col1X      = margin + 28;
+      const col2X      = col1X + colW;
+
+      const lc: [number,number,number] = [140, 160, 200];
+      const vc: [number,number,number] = [15,  23,  55];
+      const ac: [number,number,number] = [59,  130, 246];
+      const gc: [number,number,number] = [5,   150, 105];
+      const am: [number,number,number] = [217, 119, 6];
+
+      const field = (label: string, value: string, x: number, y: number, color: [number,number,number] = vc) => {
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(7);
+        doc.setTextColor(...lc);
+        doc.text(label, x, y);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(12.5);
+        doc.setTextColor(...color);
+        doc.text(value || '—', x, y + 15);
+      };
+
+      const boardingTime = new Date(new Date(flight.departure_time).getTime() - 45 * 60000)
+        .toLocaleTimeString('en-US', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit' });
+
+      const row1Y = sepY + 30;
+      field('PASSENGER',       `${pax.first_name} ${pax.last_name}`, col1X, row1Y);
+      field('FLIGHT',          flight.flight_number || '',            col2X, row1Y, ac);
+
+      const row2Y = row1Y + 50;
+      field('DATE',            new Date(flight.departure_time).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric', timeZone:'Asia/Kolkata' }), col1X, row2Y);
+      field('SEAT',            pax.seat_number || 'INFANT',           col2X, row2Y, gc);
+
+      const row3Y = row2Y + 50;
+      field('PNR',             booking.pnr || '',                     col1X, row3Y);
+      field('BOARDING TIME',   `${boardingTime} IST`,                 col2X, row3Y, am);
+
+      const row4Y = row3Y + 50;
+      if (pax.ticket_number) {
+        field('TICKET NO',     pax.ticket_number,                     col1X, row4Y);
+      }
+      field('STATUS',          (booking.status || 'CONFIRMED').toUpperCase(), col2X, row4Y, gc);
+
+      // ── Footer strip ────────────────────────────────────────────────
+      const footerY = cardY + cardH - 28;
+      doc.setFillColor(240, 244, 255);
+      doc.roundedRect(margin, footerY - 4, cardW, 28, 0, 0, 'F');
+      // round only bottom corners
+      doc.roundedRect(margin, footerY - 4, cardW, 32, 12, 12, 'F');
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(7.5);
+      doc.setTextColor(140, 160, 200);
+      doc.text(
+        `This is an e-ticket. Please carry a valid photo ID.  •  Passenger ${idx + 1} of ${booking_passengers.length}  •  Issued: ${new Date().toLocaleDateString('en-GB')}`,
+        margin + cardW / 2,
+        footerY + 14,
+        { align: 'center' }
+      );
+    }
+
+    doc.save(`Boarding_Pass_${booking.pnr || bookingId}.pdf`);
+    toast.success('PDF downloaded successfully!');
   };
 
   if (loading) {
@@ -296,8 +501,12 @@ export default function ConfirmationPage({ params }: { params: Promise<{ booking
             </div>
 
             <div className="mt-8 flex justify-center">
-              <button onClick={() => window.print()} className="py-3 px-8 bg-muted hover:bg-muted/80 border border-border text-foreground rounded-xl font-bold transition-colors">
-                Download All Tickets
+              <button 
+                onClick={handleDownloadPDF} 
+                className="py-3 px-8 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-bold transition-all shadow-lg hover:shadow-primary/30 flex items-center gap-2"
+              >
+                <Download className="w-5 h-5" />
+                Download All Tickets (PDF)
               </button>
             </div>
             

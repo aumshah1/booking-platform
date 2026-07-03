@@ -9,7 +9,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-primary/30 transition-colors duration-300 flex flex-col">
       <Navbar />
-      
+
       <main className="relative flex-1 flex flex-col items-center overflow-hidden">
         {/* Background glow effects */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] md:w-[800px] md:h-[800px] bg-primary/20 rounded-full blur-[120px] -z-10 pointer-events-none opacity-60" />
@@ -24,27 +24,27 @@ export default function Home() {
             className="space-y-6 max-w-4xl"
           >
             <motion.div
-               initial={{ opacity: 0, scale: 0.9 }}
-               animate={{ opacity: 1, scale: 1 }}
-               transition={{ delay: 0.2, duration: 0.5 }}
-               className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-primary/30 bg-primary/10 text-primary text-sm font-medium mb-4 backdrop-blur-sm shadow-sm"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, duration: 0.5 }}
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-primary/30 bg-primary/10 text-primary text-sm font-medium mb-4 backdrop-blur-sm shadow-sm"
             >
               <Sparkles className="w-4 h-4" />
               <span>Premium Airline Booking System</span>
             </motion.div>
-            
+
             <h1 className="text-5xl md:text-7xl font-bold tracking-tight font-heading text-foreground leading-[1.1]">
-              Elevate Your Journey with <br className="hidden md:block"/>
+              Elevate Your Journey with <br className="hidden md:block" />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-500 drop-shadow-sm">
                 BlueWings Connect
               </span>
             </h1>
-            
+
             <p className="max-w-2xl mx-auto text-lg md:text-xl text-muted-foreground mt-6 leading-relaxed">
               Experience the next generation of air travel. Seamless booking, intelligent conversational assistance, and premium service tailored just for you.
             </p>
-            
-            <motion.div 
+
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.6 }}
@@ -66,7 +66,7 @@ export default function Home() {
         <div className="w-full bg-card/50 border-t border-border backdrop-blur-xl py-20 mt-auto z-10">
           <div className="container mx-auto px-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -80,7 +80,7 @@ export default function Home() {
                 <p className="text-muted-foreground">Access a worldwide network of premium flights with competitive pricing and flexible scheduling.</p>
               </motion.div>
 
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -94,7 +94,7 @@ export default function Home() {
                 <p className="text-muted-foreground">Enterprise-grade security ensures your personal data and payment information is always protected.</p>
               </motion.div>
 
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
