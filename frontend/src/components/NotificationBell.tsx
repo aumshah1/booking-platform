@@ -1,4 +1,4 @@
-'use client';
+'use client'; 
 
 import { useState, useEffect } from 'react';
 import { Bell, Check, Trash2, Clock } from 'lucide-react';
@@ -26,7 +26,7 @@ export default function NotificationBell() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
 
-  const fetchNotifications = async () => {
+  const  fetchNotifications = async () => {
     try {
       const res = await api.get('/api/notifications');
       const data = res.data.data;
